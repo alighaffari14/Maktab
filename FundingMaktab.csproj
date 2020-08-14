@@ -2826,6 +2826,7 @@
     <Content Include="DonationIncome.aspx" />
     <Content Include="Donors.aspx" />
     <Content Include="favicon.ico" />
+    <Content Include="GetFailedStudents.aspx" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
     <Content Include="js\jquery.dataTables.js" />
@@ -2919,6 +2920,7 @@
     <Content Include="dist\scss\widgets\topbar-mail.scss" />
     <Content Include="dist\scss\widgets\weather-widget.scss" />
     <Content Include="dist\scss\widgets\widgets.scss" />
+    <Content Include="MuallimProgress.aspx" />
     <Content Include="Muallims.aspx" />
     <Content Include="Offices.aspx" />
     <Content Include="PurposeTransactions.aspx" />
@@ -3129,6 +3131,13 @@
     <Compile Include="Donors.aspx.designer.cs">
       <DependentUpon>Donors.aspx</DependentUpon>
     </Compile>
+    <Compile Include="GetFailedStudents.aspx.cs">
+      <DependentUpon>GetFailedStudents.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GetFailedStudents.aspx.designer.cs">
+      <DependentUpon>GetFailedStudents.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -3147,6 +3156,13 @@
       <DependentUpon>Main.Master</DependentUpon>
     </Compile>
     <Compile Include="Models\DonationExpenseModel.cs" />
+    <Compile Include="MuallimProgress.aspx.cs">
+      <DependentUpon>MuallimProgress.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MuallimProgress.aspx.designer.cs">
+      <DependentUpon>MuallimProgress.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Muallims.aspx.cs">
       <DependentUpon>Muallims.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

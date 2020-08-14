@@ -25,9 +25,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="example-month-input2" class="control-label">Exam Month</label>
+                                        <label for="example-month-input2" class="control-label">Exam Semester</label>
                                         <div class="col-10">
                                             <asp:DropDownList ID="DropDownList2" AutoPostBack="true" OnSelectedIndexChanged="DropDownList2_SelectedIndexChanged" CssClass="custom-select col-12" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                         <div class="form-group row">
+                                        <label for="example-month-input2" class="control-label">Exam Date</label>
+                                        <div class="col-4">
+                                            <asp:TextBox ID="TextBox2" TextMode="Date" CssClass="form-control" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
                                         <div class="form-group row">

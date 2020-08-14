@@ -12,7 +12,7 @@ namespace FundingMaktab
 
         public static SqlConnection authorize()
         {
-            string constring = "Data Source=DESKTOP-FJ0SCFI;Initial Catalog=FundSystem;Integrated Security=True";
+            string constring = @"Data Source=.\MSSQLSERVER01;Initial Catalog=FundingSystem;Integrated Security=True";
             SqlConnection con = new SqlConnection(constring);
             con.Open();
             return con;

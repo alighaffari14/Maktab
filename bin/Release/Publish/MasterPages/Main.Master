@@ -231,6 +231,7 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="Muallims.aspx">Muallim/Muallima List</a></li>
                                 <li><a href="AddMuallim.aspx">Add Muallim/Muallima</a></li>
+                                <li><a href="MuallimProgress.aspx">Prorgress Report</a></li>
                             </ul>
                         </li>
                        
