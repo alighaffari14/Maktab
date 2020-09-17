@@ -113,6 +113,7 @@ namespace FundingMaktab
             StringCollection sc = new StringCollection();
             if (ViewState["CurrentTable"] != null)
             {
+                double totalpercentage = 0;
                 int val = 0;
                 string status = "";
                 DataTable dtCurrentTable = (DataTable)ViewState["CurrentTable"];
@@ -126,7 +127,8 @@ namespace FundingMaktab
                         TextBox box1 = (TextBox)Gridview1.Rows[rowIndex].Cells[1].FindControl("TextBox1");
                         int studentid = int.Parse(dtCurrentTable.Rows[val][0].ToString());
                         val++;
-                        if (int.Parse(box1.Text) < 60)
+                        totalpercentage = (double.Parse(box1.Text) * 100) / double.Parse(TextBox1.Text);
+                        if (totalpercentage< 50)
                         {
                              status = "Fail";
                         }

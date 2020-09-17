@@ -28,7 +28,8 @@ namespace FundingMaktab
                     gettingTotalDarjaeAtfaalStudents();
                     gettingTotalDarjaeAwwalStudents();
                     gettingTotalStudentsInCenter();
-                    BindingExamsEnrolledMonths();
+                    BindingExamsEnrolledMonthsAtfaal();
+                    BindingExamsEnrolledMonthsAwwal();
                     LoadLastMonthofLastRow();
                 }
                 else
@@ -158,7 +159,8 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
         protected void DropDownList3_SelectedIndexChanged(object sender, EventArgs e)
         {
             GettingAllInformationRelatedToCenterOnLoad();
-            BindingExamsEnrolledMonths();
+            BindingExamsEnrolledMonthsAtfaal();
+            BindingExamsEnrolledMonthsAwwal();
             gettingTotalVipStudents();
             gettingTotalDarjaeAtfaalStudents();
             gettingTotalDarjaeAwwalStudents();
@@ -178,8 +180,8 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
             con.Close();
         }
 
-
-        private void BindingExamsEnrolledMonths()
+        #region gettingNumberOfStudentsEnrolledInExamsAtfaal
+        private void BindingExamsEnrolledMonthsAtfaal()
         {
             LoadLastMonthofLastRow();
             for (int i = 1; i < 7; i++)
@@ -187,14 +189,29 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 if (i == 1)
                 {
                     con = Connection.authorize();
+                    string query1 = @"SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
                     string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '"+int.Parse(DropDownList3.SelectedValue)+"' and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='"+lastMonth+"'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    DataTable dt = new DataTable();
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.Fill(dt);
+                    SqlDataAdapter sda1 = new SqlDataAdapter(query1, con);
+                    sda1.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                        Label2.Text = reader[0].ToString();
+                        int j = 0;
+                        if (item[j].ToString()!= "")
+                        {
+                            
+                        }
+                        else
+                        {
+                            Label2.Text = item["NotTaken"].ToString();
+                        }
                         
+                            j++;
                     }
+                        
+                    
                     con.Close();
                 }
                 else if (i == 2)
@@ -271,6 +288,113 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
             }
             
         }
+        #endregion
+
+        #region gettingNumberOfStudentsEnrolledInExamsAwwal
+        private void BindingExamsEnrolledMonthsAwwal()
+        {
+            LoadLastMonthofLastRow();
+            for (int i = 1; i < 7; i++)
+            {
+                if (i == 1)
+                {
+                    con = Connection.authorize();
+                    string query1 = @"SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=2 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    //SqlCommand cmd = new SqlCommand(query, con);
+                    DataTable dt = new DataTable();
+                    SqlDataAdapter sda1 = new SqlDataAdapter(query1,con);
+                    sda1.Fill(dt);
+                    SqlDataAdapter sda2 = new SqlDataAdapter(query, con);
+                    sda2.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        int j = 0;
+                        if(item[j].ToString()!="")
+                        {
+                            Label8.Text = item["NotTaken"].ToString();
+                        }
+                        j++;
+                        
+                    }
+                   
+                    con.Close();
+                }
+                else if (i == 2)
+                {
+                    con = Connection.authorize();
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                        Label9.Text = reader[0].ToString();
+                    }
+                    con.Close();
+                }
+                else if (i == 3)
+                {
+
+                    con = Connection.authorize();
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=3 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                        Label10.Text = reader[0].ToString();
+
+                    }
+                    con.Close();
+                }
+
+                else if (i == 4)
+                {
+                    con = Connection.authorize();
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=4 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                        Label11.Text = reader[0].ToString();
+
+                    }
+                    con.Close();
+                }
+                else if (i == 5)
+                {
+                    con = Connection.authorize();
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=5 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                        Label12.Text = reader[0].ToString();
+                    }
+                    con.Close();
+                }
+                else if (i == 6)
+                {
+                    con = Connection.authorize();
+                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=6 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                        Label13.Text = reader[0].ToString();
+                    }
+                    con.Close();
+                }
+
+
+            }
+
+        }
+        #endregion
 
         protected void textBox12_TextChanged(object sender, EventArgs e)
         {
@@ -281,6 +405,150 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
             
         }
 
-        
+
+        #region getfailedstudentsforAtfaalStudentsOnNewPageAtfaal
+
+        public void exam1Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 1;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void exam2Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 2;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+
+        }
+        public void exam3Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 3;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void exam4Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 4;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void exam5Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 5;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void exam6Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 1;
+            int last_month = lastMonth;
+            int examid = 6;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+
+        #endregion
+
+
+        #region getfailedstudentsforAtfaalStudentsOnNewPageAwwal
+
+        public void Awwalexam1Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 1;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void Awwalexam2Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 2;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void Awwalexam3Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 3;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void Awwalexam4Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 4;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void Awwalexam5Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 5;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+        public void Awwalexam6Pageopening_click(object sender, EventArgs e)
+        {
+            LoadLastMonthofLastRow();
+            int offid = int.Parse(DropDownList3.SelectedValue);
+            int classid = 2;
+            int last_month = lastMonth;
+            int examid = 6;
+            string url_To_Open = string.Format("GetFailedStudents.aspx?Office_Id={0}&Class_Id={1}&Exam_Id={2}&lastMonth={3}", offid, classid, examid, last_month);
+            string modified_URL = "window.open('" + url_To_Open + "', '_blank');";
+            ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+        }
+
+        #endregion
+
     }
 }

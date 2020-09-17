@@ -152,12 +152,44 @@
                                             <tr>
                                                 
                                                 <th class="text-nowrap" scope="row">Total Numbers</th>
-                                                <td><asp:Label ID="Label2" runat="server" Text=""></asp:Label></td>
-                                                <td><asp:Label ID="Label3" runat="server" Text=""></asp:Label></td>
-                                                <td><asp:Label ID="Label4" runat="server" Text=""></asp:Label></td>
-                                                <td><asp:Label ID="Label5" runat="server" Text=""></asp:Label></td>
-                                                <td><asp:Label ID="Label6" runat="server" Text=""></asp:Label></td>
-                                                <td><asp:Label ID="Label7" runat="server" Text=""></asp:Label></td>
+                                                <td><asp:LinkButton ID="LinkButton1" OnClick="exam1Pageopening_click" runat="server"><asp:Label ID="Label2" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton2" OnClick="exam2Pageopening_click" runat="server"><asp:Label ID="Label3" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton3" OnClick="exam3Pageopening_click" runat="server"><asp:Label ID="Label4" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton4" OnClick="exam4Pageopening_click" runat="server"><asp:Label ID="Label5" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton5" OnClick="exam5Pageopening_click" runat="server"><asp:Label ID="Label6" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton6" OnClick="exam6Pageopening_click" runat="server"><asp:Label ID="Label7" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                            </tr>
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                     <h6 class="card-subtitle"><b>Awwal</b></h6>
+                                    <div class="table-responsive">
+                                    <table class="table table-bordered table-striped ">
+                                        <thead>
+                                            <tr>
+                                                <th>Months</th>
+                                                <th class="text-center"> 1st </th>
+                                                <th class="text-center"> 2nd </th>
+                                                <th class="text-center"> 3rd </th>
+                                                <th class="text-center"> 4th </th>
+                                                <th class="text-center"> 5th </th>
+                                                <th class="text-center"> 6th </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          
+                                            <tr>
+                                                
+                                                <th class="text-nowrap" scope="row">Total Numbers</th>
+                                                <td><asp:LinkButton ID="LinkButton7" OnClick="Awwalexam1Pageopening_click" runat="server"><asp:Label ID="Label8" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton8" OnClick="Awwalexam2Pageopening_click" runat="server"><asp:Label ID="Label9" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton9" OnClick="Awwalexam3Pageopening_click" runat="server"><asp:Label ID="Label10" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton10" OnClick="Awwalexam4Pageopening_click" runat="server"><asp:Label ID="Label11" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton11" OnClick="Awwalexam5Pageopening_click" runat="server"><asp:Label ID="Label12" runat="server" Text=""></asp:Label></asp:LinkButton></td>
+                                                <td><asp:LinkButton ID="LinkButton12" OnClick="Awwalexam6Pageopening_click" runat="server"><asp:Label ID="Label13" runat="server" Text=""></asp:Label></asp:LinkButton></td>
                                             </tr>
                                            
                                         </tbody>

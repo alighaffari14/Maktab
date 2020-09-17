@@ -12,14 +12,14 @@ namespace FundingMaktab
 
         public static SqlConnection authorize()
         {
-            string constring = @"Data Source=.\MSSQLSERVER01;Initial Catalog=FundingSystem;Integrated Security=True";
-            SqlConnection con = new SqlConnection(constring);
-            con.Open();
-            return con;
-            //string constring = "data source=odfa.xyz;Initial Catalog=odfaxyz_funding;Persist Security Info=True;User ID=hassan; Password=G#@3012*";
+            //string constring = @"Data Source=.\MSSQLSERVER01;Initial Catalog=FundingSystem;Integrated Security=True";
             //SqlConnection con = new SqlConnection(constring);
             //con.Open();
             //return con;
+            string constring = "data source=maktabonline.ml;Initial Catalog=maktabon_Funding;Persist Security Info=True;User ID=ghaffari; Password=W#lm057g";
+            SqlConnection con = new SqlConnection(constring);
+            con.Open();
+            return con;
         }
     }
 }

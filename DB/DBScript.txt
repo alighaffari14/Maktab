@@ -1,0 +1,733 @@
+USE [master]
+GO
+/****** Object:  Database [odfaxyz_funding]    Script Date: 17/09/2020 4:22:20 pm ******/
+CREATE DATABASE [odfaxyz_funding]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'odfaxyz_funding', FILENAME = N'C:\Program Files (x86)\Plesk\Databases\MSSQL\MSSQL13.MSSQLSERVER2016\MSSQL\DATA\odfaxyz_funding_8e15d4dc250e40059afaf51ab30c33d1.mdf' , SIZE = 8192KB , MAXSIZE = 512000KB , FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'odfaxyz_funding_log', FILENAME = N'C:\Program Files (x86)\Plesk\Databases\MSSQL\MSSQL13.MSSQLSERVER2016\MSSQL\DATA\odfaxyz_funding_a57fd1d5aa564da9a73a36ba2d47a994.ldf' , SIZE = 8192KB , MAXSIZE = 512000KB , FILEGROWTH = 65536KB )
+GO
+ALTER DATABASE [odfaxyz_funding] SET COMPATIBILITY_LEVEL = 130
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [odfaxyz_funding].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [odfaxyz_funding] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [odfaxyz_funding] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [odfaxyz_funding] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [odfaxyz_funding] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [odfaxyz_funding] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [odfaxyz_funding] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [odfaxyz_funding] SET  MULTI_USER 
+GO
+ALTER DATABASE [odfaxyz_funding] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [odfaxyz_funding] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [odfaxyz_funding] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [odfaxyz_funding] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [odfaxyz_funding] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [odfaxyz_funding] SET QUERY_STORE = OFF
+GO
+USE [odfaxyz_funding]
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET LEGACY_CARDINALITY_ESTIMATION = OFF;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET MAXDOP = 0;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET PARAMETER_SNIFFING = ON;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET QUERY_OPTIMIZER_HOTFIXES = OFF;
+GO
+USE [odfaxyz_funding]
+GO
+/****** Object:  User [odfaxyz]    Script Date: 17/09/2020 4:22:23 pm ******/
+CREATE USER [odfaxyz] FOR LOGIN [odfaxyz] WITH DEFAULT_SCHEMA=[odfaxyz]
+GO
+/****** Object:  User [hassan]    Script Date: 17/09/2020 4:22:23 pm ******/
+CREATE USER [hassan] FOR LOGIN [hassan] WITH DEFAULT_SCHEMA=[hassan]
+GO
+/****** Object:  User [champion]    Script Date: 17/09/2020 4:22:23 pm ******/
+CREATE USER [champion] FOR LOGIN [champion] WITH DEFAULT_SCHEMA=[champion]
+GO
+ALTER ROLE [db_ddladmin] ADD MEMBER [odfaxyz]
+GO
+ALTER ROLE [db_backupoperator] ADD MEMBER [odfaxyz]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [odfaxyz]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [odfaxyz]
+GO
+ALTER ROLE [db_accessadmin] ADD MEMBER [hassan]
+GO
+ALTER ROLE [db_ddladmin] ADD MEMBER [hassan]
+GO
+ALTER ROLE [db_backupoperator] ADD MEMBER [hassan]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [hassan]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [hassan]
+GO
+ALTER ROLE [db_ddladmin] ADD MEMBER [champion]
+GO
+ALTER ROLE [db_backupoperator] ADD MEMBER [champion]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [champion]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [champion]
+GO
+/****** Object:  Schema [champion]    Script Date: 17/09/2020 4:22:24 pm ******/
+CREATE SCHEMA [champion]
+GO
+/****** Object:  Schema [hassan]    Script Date: 17/09/2020 4:22:24 pm ******/
+CREATE SCHEMA [hassan]
+GO
+/****** Object:  Schema [odfaxyz]    Script Date: 17/09/2020 4:22:24 pm ******/
+CREATE SCHEMA [odfaxyz]
+GO
+/****** Object:  UserDefinedFunction [dbo].[NextCustomerNumber]    Script Date: 17/09/2020 4:22:24 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE function [dbo].[NextCustomerNumber]() 
+returns char(5) 
+as 
+begin 
+	declare @lastval char(5) 
+	set @lastval = (select max(Office_Id) from Tbl_Office) 
+	if @lastval is null set @lastval = 'M0001' 
+	declare @i int 
+	set @i = right(@lastval,4) + 1 
+	return 'M' + right('000' + convert(varchar(10),@i),4) 
+end
+GO
+/****** Object:  Table [dbo].[Tbl_AccontType]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_AccontType](
+	[Acc_Type_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Acc_Type_Name] [nvarchar](50) NOT NULL,
+	[Acc_Type_Description] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Table_1] PRIMARY KEY CLUSTERED 
+(
+	[Acc_Type_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Account]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Account](
+	[Acc_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Acc_Name] [nvarchar](50) NOT NULL,
+	[Acc_InitialAmount] [int] NOT NULL,
+	[Acc_Desc] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Tbl_Account] PRIMARY KEY CLUSTERED 
+(
+	[Acc_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_AccountControl]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_AccountControl](
+	[Acc_Con_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Acc_Id] [int] NOT NULL,
+	[Acc_Type_Id] [int] NOT NULL,
+ CONSTRAINT [PK_Tbl_AccountControl] PRIMARY KEY CLUSTERED 
+(
+	[Acc_Con_Id] ASC,
+	[Acc_Id] ASC,
+	[Acc_Type_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Classes]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Classes](
+	[Class_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Class_Name] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_Classes] PRIMARY KEY CLUSTERED 
+(
+	[Class_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Custodian]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Custodian](
+	[Custodian_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Custodian_Name] [nvarchar](50) NOT NULL,
+	[Custodian_Nic] [nvarchar](15) NOT NULL,
+	[Custodian_Contact] [nvarchar](14) NOT NULL,
+	[Custodian_Address] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Tbl_Custodian] PRIMARY KEY CLUSTERED 
+(
+	[Custodian_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_CustodianAccount]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_CustodianAccount](
+	[Custodian_Account_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Custodian_ID] [int] NULL,
+	[Account_Custodian_Id] [int] NULL,
+	[Account_CustodianPurpose_Id] [int] NULL,
+	[Amount] [int] NULL,
+ CONSTRAINT [PK_Tbl_CustodianAccount] PRIMARY KEY CLUSTERED 
+(
+	[Custodian_Account_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Donar]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Donar](
+	[Donar_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Donar_Name] [nvarchar](50) NOT NULL,
+	[Donar_City] [nvarchar](50) NOT NULL,
+	[Donar_Country] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Tbl_Donar] PRIMARY KEY CLUSTERED 
+(
+	[Donar_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Donations]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Donations](
+	[Donation_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Donar_Acc_Id] [int] NULL,
+	[Donation_Purpose] [int] NULL,
+	[Donar_Amount] [int] NULL,
+	[Donar_Id] [int] NULL,
+	[Donation_Date] [date] NULL,
+	[Donation_Custodian_Id] [int] NULL,
+	[Donation_Office_Id] [int] NULL,
+ CONSTRAINT [PK_Tbl_Donations] PRIMARY KEY CLUSTERED 
+(
+	[Donation_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_ExamsMonths]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_ExamsMonths](
+	[Exam_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Exam_Name] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_Exams] PRIMARY KEY CLUSTERED 
+(
+	[Exam_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_MaktabReporting]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_MaktabReporting](
+	[MaktabReporting_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Office_Id] [int] NULL,
+	[Muallim_Id] [int] NULL,
+	[Visiting_Date] [nvarchar](50) NULL,
+	[VIP_Students] [int] NULL,
+	[Atfaal_Students] [int] NULL,
+	[Awwal_Students] [int] NULL,
+	[Total_Students] [int] NULL,
+	[Shariya] [int] NULL,
+	[Disciplane_Marks] [int] NULL,
+	[Cleaning_Marks] [int] NULL,
+	[Books_Exams] [int] NULL,
+	[Oral_Exams] [int] NULL,
+	[No_Of_Books] [int] NULL,
+	[Total_Obtained_Marks] [int] NULL,
+	[Remarks] [nvarchar](max) NULL,
+ CONSTRAINT [PK_Tbl_MaktabReporting] PRIMARY KEY CLUSTERED 
+(
+	[MaktabReporting_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Muallim]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Muallim](
+	[Muallim_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NULL,
+	[Father_Name] [nvarchar](50) NULL,
+	[Deeni_Taleem] [nvarchar](50) NULL,
+	[Dunyawi_Taleem] [nvarchar](50) NULL,
+	[Contact_Number] [nvarchar](50) NULL,
+	[Madrisah_Education_Name] [nvarchar](50) NULL,
+	[Office_Id] [int] NULL,
+ CONSTRAINT [PK_Tbl_Muallim] PRIMARY KEY CLUSTERED 
+(
+	[Muallim_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Offices]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Offices](
+	[Office_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Registeration_Number]  AS (right('000'+CONVERT([varchar](4),[Office_Id]),(4))),
+	[Office_Name] [nvarchar](50) NULL,
+	[Village_Mohalla] [nvarchar](50) NULL,
+	[Tehsil_District] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_Offices] PRIMARY KEY CLUSTERED 
+(
+	[Office_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Purpose]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Purpose](
+	[Purpose_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Purpose_Name] [nvarchar](50) NOT NULL,
+	[Purpose_Account_Id] [int] NOT NULL,
+ CONSTRAINT [PK_Tbl_Purpose] PRIMARY KEY CLUSTERED 
+(
+	[Purpose_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_PurposeTransactions]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_PurposeTransactions](
+	[PurposeTransaction_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Purpose_Id] [int] NULL,
+	[Account_Id] [int] NULL,
+	[Amount] [int] NULL,
+ CONSTRAINT [PK_Tbl_PurposeTransactions] PRIMARY KEY CLUSTERED 
+(
+	[PurposeTransaction_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_StudentEnrolledExams]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_StudentEnrolledExams](
+	[StudentExam_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Student_Id] [int] NULL,
+	[Exam_Id] [int] NULL,
+	[Class_Id] [int] NULL,
+	[Office_Id] [int] NULL,
+	[Year] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_StudentEnrolledExams] PRIMARY KEY CLUSTERED 
+(
+	[StudentExam_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Students]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Students](
+	[Student_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Student_Name] [nvarchar](50) NULL,
+	[Father_Name] [nvarchar](50) NULL,
+	[Class_Id] [int] NULL,
+	[Office_Id] [int] NULL,
+ CONSTRAINT [PK_Tbl_Students] PRIMARY KEY CLUSTERED 
+(
+	[Student_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_StudentsExamMarking]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_StudentsExamMarking](
+	[StudentExamMarking_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Student_Id] [int] NULL,
+	[Class_Id] [int] NULL,
+	[Office_Id] [int] NULL,
+	[Exam_Id] [int] NULL,
+	[Exam_Date] [date] NULL,
+	[TotalMarks] [int] NULL,
+	[ObtainedMarks] [int] NULL,
+	[Status] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_StudentsExamMarking] PRIMARY KEY CLUSTERED 
+(
+	[StudentExamMarking_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Transaction]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Transaction](
+	[Transaction_Id] [int] IDENTITY(1,1) NOT NULL,
+	[Transaction_Acc_Id] [int] NULL,
+	[Trasaction_Donar_Id] [int] NULL,
+	[Transaction_Amount_Credit] [int] NULL,
+	[Transaction_Amount_Debit] [int] NULL,
+	[Transaction_Purpose] [nvarchar](50) NULL,
+	[Transaction_Date] [datetime] NULL,
+	[Transaction_Custodian_Id] [int] NULL,
+	[Transaction_Office_Id] [int] NULL,
+ CONSTRAINT [PK_Tbl_Transaction] PRIMARY KEY CLUSTERED 
+(
+	[Transaction_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_Users]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_Users](
+	[User_Id] [int] IDENTITY(1,1) NOT NULL,
+	[User_Type] [int] NULL,
+	[username] [nvarchar](50) NULL,
+	[password] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_Users] PRIMARY KEY CLUSTERED 
+(
+	[User_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tbl_UserTypes]    Script Date: 17/09/2020 4:22:25 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tbl_UserTypes](
+	[UserType_Id] [int] IDENTITY(1,1) NOT NULL,
+	[user_Type] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Tbl_UserTypes] PRIMARY KEY CLUSTERED 
+(
+	[UserType_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_Classes] ON 
+GO
+INSERT [dbo].[Tbl_Classes] ([Class_Id], [Class_Name]) VALUES (1, N'Atfaal')
+GO
+INSERT [dbo].[Tbl_Classes] ([Class_Id], [Class_Name]) VALUES (2, N'Awwal')
+GO
+INSERT [dbo].[Tbl_Classes] ([Class_Id], [Class_Name]) VALUES (3, N'Doem')
+GO
+INSERT [dbo].[Tbl_Classes] ([Class_Id], [Class_Name]) VALUES (4, N'VIP')
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_Classes] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_Users] ON 
+GO
+INSERT [dbo].[Tbl_Users] ([User_Id], [User_Type], [username], [password]) VALUES (1, 1, N'qamber', N'qamber')
+GO
+INSERT [dbo].[Tbl_Users] ([User_Id], [User_Type], [username], [password]) VALUES (2, 2, N'haider', N'haider')
+GO
+INSERT [dbo].[Tbl_Users] ([User_Id], [User_Type], [username], [password]) VALUES (3, 3, N'ghaffari', N'ghaffari')
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_Users] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_UserTypes] ON 
+GO
+INSERT [dbo].[Tbl_UserTypes] ([UserType_Id], [user_Type]) VALUES (1, N'Admin')
+GO
+INSERT [dbo].[Tbl_UserTypes] ([UserType_Id], [user_Type]) VALUES (2, N'Accountant')
+GO
+INSERT [dbo].[Tbl_UserTypes] ([UserType_Id], [user_Type]) VALUES (3, N'Maktab Manager')
+GO
+SET IDENTITY_INSERT [dbo].[Tbl_UserTypes] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [AccontTypeName]    Script Date: 17/09/2020 4:22:47 pm ******/
+CREATE UNIQUE NONCLUSTERED INDEX [AccontTypeName] ON [dbo].[Tbl_AccontType]
+(
+	[Acc_Type_Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_Tbl_Account]    Script Date: 17/09/2020 4:22:47 pm ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Tbl_Account] ON [dbo].[Tbl_Account]
+(
+	[Acc_Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Tbl_AccountControl]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_AccountControl_Tbl_AccontType] FOREIGN KEY([Acc_Type_Id])
+REFERENCES [dbo].[Tbl_AccontType] ([Acc_Type_Id])
+GO
+ALTER TABLE [dbo].[Tbl_AccountControl] CHECK CONSTRAINT [FK_Tbl_AccountControl_Tbl_AccontType]
+GO
+ALTER TABLE [dbo].[Tbl_AccountControl]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_AccountControl_Tbl_Account] FOREIGN KEY([Acc_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_AccountControl] CHECK CONSTRAINT [FK_Tbl_AccountControl_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Account] FOREIGN KEY([Account_Custodian_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount] CHECK CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Custodian] FOREIGN KEY([Custodian_ID])
+REFERENCES [dbo].[Tbl_Custodian] ([Custodian_Id])
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount] CHECK CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Custodian]
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Purpose] FOREIGN KEY([Account_CustodianPurpose_Id])
+REFERENCES [dbo].[Tbl_Purpose] ([Purpose_Id])
+GO
+ALTER TABLE [dbo].[Tbl_CustodianAccount] CHECK CONSTRAINT [FK_Tbl_CustodianAccount_Tbl_Purpose]
+GO
+ALTER TABLE [dbo].[Tbl_Donations]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Donations_Tbl_Account] FOREIGN KEY([Donar_Acc_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Donations] CHECK CONSTRAINT [FK_Tbl_Donations_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_Donations]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Donations_Tbl_Custodian] FOREIGN KEY([Donation_Custodian_Id])
+REFERENCES [dbo].[Tbl_Custodian] ([Custodian_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Donations] CHECK CONSTRAINT [FK_Tbl_Donations_Tbl_Custodian]
+GO
+ALTER TABLE [dbo].[Tbl_Donations]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Donations_Tbl_Donar] FOREIGN KEY([Donar_Id])
+REFERENCES [dbo].[Tbl_Donar] ([Donar_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Donations] CHECK CONSTRAINT [FK_Tbl_Donations_Tbl_Donar]
+GO
+ALTER TABLE [dbo].[Tbl_Donations]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Donations_Tbl_Office] FOREIGN KEY([Donation_Office_Id])
+REFERENCES [dbo].[Tbl_Offices] ([Office_Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Tbl_Donations] CHECK CONSTRAINT [FK_Tbl_Donations_Tbl_Office]
+GO
+ALTER TABLE [dbo].[Tbl_Donations]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Donations_Tbl_Purpose] FOREIGN KEY([Donation_Purpose])
+REFERENCES [dbo].[Tbl_Purpose] ([Purpose_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Donations] CHECK CONSTRAINT [FK_Tbl_Donations_Tbl_Purpose]
+GO
+ALTER TABLE [dbo].[Tbl_Purpose]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Purpose_Tbl_Account] FOREIGN KEY([Purpose_Account_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Purpose] CHECK CONSTRAINT [FK_Tbl_Purpose_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_PurposeTransactions]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_PurposeTransactions_Tbl_Account] FOREIGN KEY([Account_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_PurposeTransactions] CHECK CONSTRAINT [FK_Tbl_PurposeTransactions_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_PurposeTransactions]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_PurposeTransactions_Tbl_Purpose] FOREIGN KEY([Purpose_Id])
+REFERENCES [dbo].[Tbl_Purpose] ([Purpose_Id])
+GO
+ALTER TABLE [dbo].[Tbl_PurposeTransactions] CHECK CONSTRAINT [FK_Tbl_PurposeTransactions_Tbl_Purpose]
+GO
+ALTER TABLE [dbo].[Tbl_Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Transaction_Tbl_Account] FOREIGN KEY([Transaction_Acc_Id])
+REFERENCES [dbo].[Tbl_Account] ([Acc_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Transaction] CHECK CONSTRAINT [FK_Tbl_Transaction_Tbl_Account]
+GO
+ALTER TABLE [dbo].[Tbl_Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Transaction_Tbl_Custodian] FOREIGN KEY([Transaction_Custodian_Id])
+REFERENCES [dbo].[Tbl_Custodian] ([Custodian_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Transaction] CHECK CONSTRAINT [FK_Tbl_Transaction_Tbl_Custodian]
+GO
+ALTER TABLE [dbo].[Tbl_Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Transaction_Tbl_Donations] FOREIGN KEY([Trasaction_Donar_Id])
+REFERENCES [dbo].[Tbl_Donar] ([Donar_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Transaction] CHECK CONSTRAINT [FK_Tbl_Transaction_Tbl_Donations]
+GO
+ALTER TABLE [dbo].[Tbl_Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_Transaction_Tbl_Office] FOREIGN KEY([Transaction_Office_Id])
+REFERENCES [dbo].[Tbl_Offices] ([Office_Id])
+GO
+ALTER TABLE [dbo].[Tbl_Transaction] CHECK CONSTRAINT [FK_Tbl_Transaction_Tbl_Office]
+GO
+/****** Object:  StoredProcedure [dbo].[AccountControl]    Script Date: 17/09/2020 4:22:47 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+create procedure [dbo].[AccountControl]
+@Acc_Name nvarchar(50),
+@Acc_InitialAmount money,
+@Acc_Desc nvarchar(100),
+@Acc_Type_Id int
+as
+begin
+Begin transaction
+
+insert into Tbl_Account values(@Acc_Name,@Acc_InitialAmount,@Acc_Desc,@Acc_Type_Id)
+declare @AccountId int
+select @AccountId= MAX(Acc_Id)from Tbl_Account
+insert into Tbl_AccountControl values(@AccountId,@Acc_Type_Id)
+IF @@ERROR <> 0
+ BEGIN
+    ROLLBACK
+    RAISERROR ('Error in Creating Account',16,1)
+    RETURN
+ END
+
+ commit
+end
+
+GO
+/****** Object:  StoredProcedure [dbo].[checkexistance]    Script Date: 17/09/2020 4:22:47 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[checkexistance]
+ @Office_id int, @Class_Id int, @Exam_Id int
+as
+begin
+if exists(select * from Tbl_Students)
+begin
+select * from Tbl_StudentsExamMarking where Office_Id=@Office_id and Class_Id=@Class_Id and Exam_Id=@Exam_Id
+end
+end
+GO
+/****** Object:  StoredProcedure [dbo].[NextOfficeId]    Script Date: 17/09/2020 4:22:47 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[NextOfficeId] 
+
+as 
+begin
+declare @lastval int
+	set @lastval = (select max(Office_Id) from Tbl_Office) 
+	if @lastval is null set @lastval = 'M0001' 
+	declare @i int 
+	set @i = right(@lastval,4) + 1 
+	return 'M' + right('000' + convert(int,@i),4) 
+
+
+end
+GO
+/****** Object:  StoredProcedure [dbo].[StudentsExamsMarkingStudentSelection]    Script Date: 17/09/2020 4:22:47 pm ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[StudentsExamsMarkingStudentSelection]
+@office_id int,
+@class_id int,
+@exam_id1 int,
+@exam_id2 int,
+@lastmonth int
+as
+begin
+Select st.Student_Id, st.Student_Name,sm.Status,sm.Exam_Id from Tbl_StudentsExamMarking sm
+inner join Tbl_Students st on st.Student_Id = sm.Student_Id
+ where sm.Office_Id = @office_id and sm.Class_Id = @class_id and sm.exam_id=@exam_id1 and status='Fail' and Month(sm.Exam_Date)=@lastmonth and not exists(select * from Tbl_StudentsExamMarking as f where f.Student_Id=sm.Student_Id and f.Office_Id = sm.Office_Id  and f.Status = 'pass' and f.Exam_Id = (sm.Exam_Id+1))
+ and exists(select * from Tbl_StudentsExamMarking as f where f.Student_Id=sm.Student_Id and f.Office_Id = sm.Office_Id  and f.Status = 'Pass' and f.Exam_Id = (sm.Exam_Id-1))
+ and not exists(select * from Tbl_StudentsExamMarking as f where f.Student_Id=sm.Student_Id and f.Office_Id = sm.Office_Id  and f.Status = 'Pass' and f.Exam_Id = (sm.Exam_Id))
+  --AND NOT EXISTS (SELECT * FROM Tbl_StudentsExamMarking AS x WHERE x.Office_Id = sm.Office_Id AND x.Student_id = sm.Student_id AND x.Exam_Id = ( sm.Exam_Id ) AND x.[Status] = 'Fail')
+Union
+Select st.Student_Id, st.Student_Name,sm.Status,sm.Exam_Id  from Tbl_StudentsExamMarking sm
+inner join Tbl_Students st on st.Student_Id = sm.Student_Id
+
+ where sm.Office_Id = @office_id and sm.Class_Id = @class_id and sm.exam_id=@exam_id2 and status='Pass' and Month(sm.Exam_Date)=@lastmonth
+ 
+  AND NOT EXISTS (SELECT * FROM Tbl_StudentsExamMarking AS x WHERE x.Office_Id = sm.Office_Id AND x.Student_id = sm.Student_id AND x.Exam_Id = ( sm.Exam_Id + 1 ) AND x.[Status] = 'Pass')
+   AND NOT EXISTS (SELECT * FROM Tbl_StudentsExamMarking AS x WHERE x.Office_Id = sm.Office_Id AND x.Student_id = sm.Student_id AND x.Exam_Id = ( sm.Exam_Id + 1 ) AND x.[Status] = 'Fail')
+
+end
+GO
+USE [master]
+GO
+ALTER DATABASE [odfaxyz_funding] SET  READ_WRITE 
+GO
