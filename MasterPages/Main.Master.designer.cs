@@ -7,13 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FundingMaktab.MasterPages
-{
-
-
-    public partial class Main
-    {
-
+namespace FundingMaktab.MasterPages {
+    
+    
+    public partial class Main {
+        
         /// <summary>
         /// body control.
         /// </summary>

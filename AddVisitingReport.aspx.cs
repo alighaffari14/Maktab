@@ -19,7 +19,7 @@ namespace FundingMaktab
         {
             if (!IsPostBack)
             {
-                if (Session["username"] != null)
+                if (Session["username"] != null && Session["User_type"].ToString()=="1")
                 {
 
                     BindingCentersDropDownlist();

@@ -45,23 +45,15 @@ namespace FundingMaktab
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows == true)
             {
-                if (int.Parse(DropDownList1.SelectedValue) == 1)
-                {
+               
                     Session["username"] = TextBox1.Text.ToString();
+                    Session["User_type"] = DropDownList1.SelectedValue.ToString();
                     Response.Redirect("Dashboard.aspx");
-                }
-                else if (int.Parse(DropDownList1.SelectedValue) == 2)
-                {
-
-                }
-                else if (int.Parse(DropDownList1.SelectedValue) == 3)
-                {
-
-                }
+               
             }
             else
             {
-
+                Response.Redirect("Login.aspx");
             }
         }
     }

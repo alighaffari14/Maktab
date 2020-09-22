@@ -51,14 +51,20 @@ namespace FundingMaktab
         private void LoadAllStudentsOnLoad()
         {
             con = Connection.authorize();
-            string query1 = @"SELECT * FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id='" + int.Parse(DropDownList1.SelectedValue) + "' and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
-            string query2 = @"SELECT st.Student_Id, st.Student_Name,e.* FROM Tbl_StudentsExamMarking AS e inner join Tbl_Students st on st.Student_Id = e.Student_Id WHERE Month(e.Exam_Date)='"+lastMonth+"' and e.Office_Id = '" + int.Parse(DropDownList3.SelectedValue)+"' AND e.Class_Id ='"+int.Parse(DropDownList1.SelectedValue)+"' AND e.Exam_Id = '"+int.Parse(DropDownList2.SelectedValue)+ "' AND [Status] = 'Fail' AND NOT EXISTS (SELECT * FROM Tbl_StudentsExamMarking AS x WHERE x.Office_Id = e.Office_Id AND x.Student_id = e.Student_id AND x.Exam_Id = ( e.Exam_Id) AND x.[Status] = 'Pass') and exists(select * from Tbl_StudentsExamMarking as f where f.Student_Id=e.Student_Id and f.Office_Id = e.Office_Id  and f.Status = 'Fail' and f.Exam_Id = (e.Exam_Id)) order by e.StudentExamMarking_Id DESC ";
+            SqlDataAdapter failed;
+            SqlDataAdapter existance;
             DataTable dt = new DataTable();
+            string query2 = "";
+            string query1 = @"SELECT * FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id='" + int.Parse(DropDownList1.SelectedValue) + "' and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
+            if (lastMonth != 0)
+            {
+                 query2 = @"SELECT st.Student_Id, st.Student_Name,e.* FROM Tbl_StudentsExamMarking AS e inner join Tbl_Students st on st.Student_Id = e.Student_Id WHERE Month(e.Exam_Date)='" + lastMonth + "' and e.Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' AND e.Class_Id ='" + int.Parse(DropDownList1.SelectedValue) + "' AND e.Exam_Id = '" + int.Parse(DropDownList2.SelectedValue) + "' AND [Status] = 'Fail' AND NOT EXISTS (SELECT * FROM Tbl_StudentsExamMarking AS x WHERE x.Office_Id = e.Office_Id AND x.Student_id = e.Student_id AND x.Exam_Id = ( e.Exam_Id) AND x.[Status] = 'Pass') and exists(select * from Tbl_StudentsExamMarking as f where f.Student_Id=e.Student_Id and f.Office_Id = e.Office_Id  and f.Status = 'Fail' and f.Exam_Id = (e.Exam_Id)) order by e.StudentExamMarking_Id DESC ";
+                failed = new SqlDataAdapter(query2, con);
+                failed.Fill(dt);
+            }
           
-            SqlDataAdapter existance = new SqlDataAdapter(query1,con);
+            existance = new SqlDataAdapter(query1,con);
             existance.Fill(dt);
-            SqlDataAdapter failed = new SqlDataAdapter(query2, con);
-            failed.Fill(dt);
             ViewState["CurrentTable"] = dt;
             Gridview1.DataSource = dt;
             Gridview1.DataBind();

@@ -7,13 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FundingMaktab
-{
-
-
-    public partial class AddMuallim
-    {
-
+namespace FundingMaktab {
+    
+    
+    public partial class AddMuallim {
+        
         /// <summary>
         /// form1 control.
         /// </summary>
@@ -22,7 +20,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-
+        
         /// <summary>
         /// textBox1 control.
         /// </summary>
@@ -31,7 +29,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox1;
-
+        
         /// <summary>
         /// textBox2 control.
         /// </summary>
@@ -40,7 +38,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox2;
-
+        
         /// <summary>
         /// textBox3 control.
         /// </summary>
@@ -49,7 +47,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox3;
-
+        
         /// <summary>
         /// textBox4 control.
         /// </summary>
@@ -58,7 +56,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox4;
-
+        
         /// <summary>
         /// textBox5 control.
         /// </summary>
@@ -67,7 +65,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox5;
-
+        
         /// <summary>
         /// textBox6 control.
         /// </summary>
@@ -76,7 +74,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBox6;
-
+        
         /// <summary>
         /// DropDownList3 control.
         /// </summary>
@@ -85,7 +83,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DropDownList3;
-
+        
         /// <summary>
         /// Button1 control.
         /// </summary>
@@ -94,7 +92,7 @@ namespace FundingMaktab
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button1;
-
+        
         /// <summary>
         /// Button2 control.
         /// </summary>
