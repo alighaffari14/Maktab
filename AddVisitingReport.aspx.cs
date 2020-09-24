@@ -184,31 +184,24 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
         private void BindingExamsEnrolledMonthsAtfaal()
         {
             LoadLastMonthofLastRow();
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < 6; i++)
             {
                 if (i == 1)
                 {
                     con = Connection.authorize();
-                    string query1 = @"SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '"+int.Parse(DropDownList3.SelectedValue)+"' and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='"+lastMonth+"'";
+                    
+                    string query = @"select(SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "'  and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth+"')";
                     DataTable dt = new DataTable();
                     SqlDataAdapter sda = new SqlDataAdapter(query, con);
                     sda.Fill(dt);
-                    SqlDataAdapter sda1 = new SqlDataAdapter(query1, con);
-                    sda1.Fill(dt);
                     foreach (DataRow item in dt.Rows)
                     {
                         int j = 0;
                         if (item[j].ToString()!= "")
                         {
-                            
+                            Label2.Text = item[0].ToString();
                         }
-                        else
-                        {
-                            Label2.Text = item["NotTaken"].ToString();
-                        }
-                        
-                            j++;
+                        j++;
                     }
                         
                     
@@ -299,12 +292,9 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 if (i == 1)
                 {
                     con = Connection.authorize();
-                    string query1 = @"SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=2 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm)";
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    string query = @"select(SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "'  and Class_Id = 2 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')";
                     //SqlCommand cmd = new SqlCommand(query, con);
                     DataTable dt = new DataTable();
-                    SqlDataAdapter sda1 = new SqlDataAdapter(query1,con);
-                    sda1.Fill(dt);
                     SqlDataAdapter sda2 = new SqlDataAdapter(query, con);
                     sda2.Fill(dt);
                     foreach (DataRow item in dt.Rows)
@@ -312,7 +302,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                         int j = 0;
                         if(item[j].ToString()!="")
                         {
-                            Label8.Text = item["NotTaken"].ToString();
+                            Label8.Text = item[j].ToString();
                         }
                         j++;
                         

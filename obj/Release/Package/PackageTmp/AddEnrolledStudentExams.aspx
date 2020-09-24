@@ -15,13 +15,13 @@
                                     <div class="form-group row">
                                         <label for="example-month-input2" class="control-label">Select Center</label>
                                         <div class="col-10">
-                                            <asp:DropDownList ID="DropDownList3" CssClass="custom-select col-12" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="DropDownList3" AutoPostBack="true" OnSelectedIndexChanged="DropDownList3_SelectedIndexChanged" CssClass="custom-select col-12" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="example-month-input2" class="control-label">Select Class</label>
                                         <div class="col-10">
-                                            <asp:DropDownList ID="DropDownList1" CssClass="custom-select col-12" runat="server"></asp:DropDownList>
+                                            <asp:DropDownList ID="DropDownList4" AutoPostBack=True OnSelectedIndexChanged="DropDownList4_SelectedIndexChanged" CssClass="custom-select col-12" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="form-group row">
