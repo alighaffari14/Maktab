@@ -222,8 +222,6 @@ namespace FundingMaktab
         protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadLastMonthofLastRow();
-            string query1 = "";
-            string query2 = "";
             DataTable dt = new DataTable();
             if (int.Parse(DropDownList2.SelectedValue) == 1)
             {

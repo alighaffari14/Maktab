@@ -183,6 +183,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
         #region gettingNumberOfStudentsEnrolledInExamsAtfaal
         private void BindingExamsEnrolledMonthsAtfaal()
         {
+            DataTable dt = new DataTable();
             LoadLastMonthofLastRow();
             for (int i = 1; i < 6; i++)
             {
@@ -191,7 +192,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                     con = Connection.authorize();
                     
                     string query = @"select(SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "'  and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth+"')";
-                    DataTable dt = new DataTable();
+                   
                     SqlDataAdapter sda = new SqlDataAdapter(query, con);
                     sda.Fill(dt);
                     foreach (DataRow item in dt.Rows)
@@ -210,14 +211,27 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 2)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 2);
+                    cmd.Parameters.AddWithValue("@exam_id2", 1);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                       
-                        Label3.Text = reader[0].ToString();
+                        if (item["Total"].ToString() != "0")
+                        {
+                            Label3.Text = item["Total"].ToString();
+                        }
                     }
+                    //SqlDataReader reader = cmd.ExecuteReader();
+                    //while (reader.Read())
+                    //{
+                        
+                    //}
                     con.Close();
                 }
                 else if (i == 3)
