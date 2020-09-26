@@ -43,4 +43,3 @@ H:\Maktab_Final\FundingMaktab\obj\Debug\FundingMaktab.csproj.CoreCompileInputs.c
 H:\Maktab_Final\FundingMaktab\obj\Debug\FundingMaktab.csproj.CopyComplete
 H:\Maktab_Final\FundingMaktab\obj\Debug\FundingMaktab.dll
 H:\Maktab_Final\FundingMaktab\obj\Debug\FundingMaktab.pdb
-H:\Maktab_Final\FundingMaktab\obj\Debug\FundingMaktab.csprojAssemblyReference.cache

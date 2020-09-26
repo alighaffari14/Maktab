@@ -183,15 +183,16 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
         #region gettingNumberOfStudentsEnrolledInExamsAtfaal
         private void BindingExamsEnrolledMonthsAtfaal()
         {
+            DataTable dt = new DataTable();
             LoadLastMonthofLastRow();
-            for (int i = 1; i < 6; i++)
+            for (int i = 1; i < 7; i++)
             {
                 if (i == 1)
                 {
                     con = Connection.authorize();
                     
-                    string query = @"select(SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "'  and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth+"')";
-                    DataTable dt = new DataTable();
+                    string query = @"select(SELECT count(Student_Id) FROM Tbl_Students WHERE Office_Id='"+int.Parse(DropDownList3.SelectedValue)+"' and Class_Id=1 and  Student_Id  NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) from Tbl_StudentsExamMarking where Office_Id = '"+int.Parse(DropDownList3.SelectedValue)+"' and Class_Id = 1 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='"+lastMonth+"' and Student_Id not in (select Student_Id from Tbl_StudentsExamMarking where Office_Id='"+int.Parse(DropDownList3.SelectedValue)+"' and Class_Id=1 and Exam_Id=1 and MONTH(Exam_Date)='"+lastMonth+"' and Status='Pass')) as Total";
+                    
                     SqlDataAdapter sda = new SqlDataAdapter(query, con);
                     sda.Fill(dt);
                     foreach (DataRow item in dt.Rows)
@@ -199,7 +200,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                         int j = 0;
                         if (item[j].ToString()!= "")
                         {
-                            Label2.Text = item[0].ToString();
+                            Label2.Text = item["Total"].ToString();
                         }
                         j++;
                     }
@@ -210,69 +211,98 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 2)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    //string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=1 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
+                    ////string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id =  and Class_Id = 1 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    //SqlCommand cmd = new SqlCommand(query, con);
+                    //SqlDataReader reader = cmd.ExecuteReader();
+                    //while (reader.Read())
+                    //{
+
+                    //    Label3.Text = reader[0].ToString();
+                    //}
+
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 2);
+                    cmd.Parameters.AddWithValue("@exam_id2", 1);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                       
-                        Label3.Text = reader[0].ToString();
+                        Label3.Text = item["Total"].ToString();
                     }
                     con.Close();
                 }
                 else if (i == 3)
                 {
 
-                    con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=3 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 3);
+                    cmd.Parameters.AddWithValue("@exam_id2", 2);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                       
-                        Label4.Text = reader[0].ToString();
-                        
+                        Label4.Text = item["Total"].ToString();
                     }
                     con.Close();
                 }
 
                 else if (i == 4)
                 {
-                    con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=4 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 4);
+                    cmd.Parameters.AddWithValue("@exam_id2", 3);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                      
-                        Label5.Text = reader[0].ToString();
-                       
+                        Label5.Text = item["Total"].ToString();
                     }
                     con.Close();
                 }
                 else if (i == 5)
                 {
-                    con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=5 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 5);
+                    cmd.Parameters.AddWithValue("@exam_id2", 4);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                       
-                        Label6.Text = reader[0].ToString();
+                        Label6.Text = item["Total"].ToString();
                     }
                     con.Close();
                 }
                 else if (i == 6)
                 {
-                    con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 1 and Exam_id=6 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SqlCommand cmd = new SqlCommand("StudentsExamsMarkingStudentSelectionPassFail", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@office_id", int.Parse(DropDownList3.SelectedValue));
+                    cmd.Parameters.AddWithValue("@class_id", 1);
+                    cmd.Parameters.AddWithValue("@exam_id1", 6);
+                    cmd.Parameters.AddWithValue("@exam_id2", 5);
+                    cmd.Parameters.AddWithValue("@lastmonth", lastMonth);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    foreach (DataRow item in dt.Rows)
                     {
-                        
-                        Label7.Text = reader[0].ToString();
+                        Label7.Text = item["Total"].ToString();
                     }
                     con.Close();
                 }
@@ -292,7 +322,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 if (i == 1)
                 {
                     con = Connection.authorize();
-                    string query = @"select(SELECT count(Student_Id) as NotTaken FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=1 and Student_Id NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "'  and Class_Id = 2 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')";
+                    string query = @"select(SELECT count(Student_Id) FROM Tbl_Students WHERE Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=2 and  Student_Id  NOT IN (SELECT Student_Id FROM Tbl_StudentsExamMarking sm))+  (select count(Student_Id) from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=1 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "' and Student_Id not in (select Student_Id from Tbl_StudentsExamMarking where Office_Id='" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id=2 and Exam_Id=1 and MONTH(Exam_Date)='" + lastMonth + "' and Status='Pass')) as Total";
                     //SqlCommand cmd = new SqlCommand(query, con);
                     DataTable dt = new DataTable();
                     SqlDataAdapter sda2 = new SqlDataAdapter(query, con);
@@ -313,7 +343,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 2)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=2 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=1 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
                     SqlCommand cmd = new SqlCommand(query, con);
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -327,7 +357,8 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 {
 
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=3 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+
+                    string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=3 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=2 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
                     SqlCommand cmd = new SqlCommand(query, con);
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -342,7 +373,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 4)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=4 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=4 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=3 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
                     SqlCommand cmd = new SqlCommand(query, con);
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -356,7 +387,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 5)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=5 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=5 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=4 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
                     SqlCommand cmd = new SqlCommand(query, con);
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -369,7 +400,7 @@ values('"+int.Parse(DropDownList3.SelectedValue)+"','"+muallim_Id+"','"+ date_ti
                 else if (i == 6)
                 {
                     con = Connection.authorize();
-                    string query = @"select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=6 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "'";
+                    string query = @"select (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=6 and Status='Fail' and Month(Exam_Date)='" + lastMonth + "')+ (select count(Student_Id) total from Tbl_StudentsExamMarking where Office_Id = '" + int.Parse(DropDownList3.SelectedValue) + "' and Class_Id = 2 and Exam_id=5 and Status='Pass' and Month(Exam_Date)='" + lastMonth + "')";
                     SqlCommand cmd = new SqlCommand(query, con);
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())

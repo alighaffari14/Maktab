@@ -60,10 +60,41 @@ namespace FundingMaktab
 
         public void Button1_Click(object sender, EventArgs e)
         {
+            bool exist = centernameexists();
+            if (exist == false)
+            {
+                con = Connection.authorize();
+                string query = "insert into Tbl_Students(Student_Name,Father_Name,Class_Id,Office_Id)values('" + textBox1.Text.ToString() + "','" + textBox2.Text.ToString() + "','" + DropDownList1.SelectedValue + "','" + DropDownList2.SelectedValue + "')";
+                SqlCommand cmd = new SqlCommand(query, con);
+                int a= cmd.ExecuteNonQuery();
+                if (a > 0)
+                {
+                    Response.Write("<script>alert('Student has been Added Successfully!')</script>");
+                }
+            }
+            
+        }
+
+        private bool centernameexists()
+        {
+            bool finalvalue = false;
             con = Connection.authorize();
-            string query = "insert into Tbl_Students(Student_Name,Father_Name,Class_Id,Office_Id)values('" + textBox1.Text.ToString() +"','"+textBox2.Text.ToString()+"','"+DropDownList1.SelectedValue+"','"+DropDownList2.SelectedValue+"')";
-            SqlCommand cmd = new SqlCommand(query, con);
-            cmd.ExecuteNonQuery();
+            string query = "select * from Tbl_Students where Student_Name = '" + textBox1.Text.ToString() + "' and Father_Name='"+ textBox2.Text.ToString() + "' and Office_Id='"+ DropDownList2.SelectedValue + "' and Class_Id='"+ DropDownList1.SelectedValue + "'";
+            SqlCommand cmd1 = new SqlCommand(query, con);
+            SqlDataReader reader = cmd1.ExecuteReader();
+            //int records = (int)cmd1.ExecuteScalar();
+
+            if (reader.HasRows)
+            {
+                Response.Write("<script>alert('Student Name already Exist')</script>");
+                finalvalue = true;
+            }
+            else
+            {
+                finalvalue = false;
+            }
+            con.Close();
+            return finalvalue;
         }
     }
 }

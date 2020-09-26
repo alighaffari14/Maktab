@@ -16,6 +16,7 @@
                                                 <th>Center</th>
                                                 <th>Total Marks</th>
                                                 <th>Obtained Marks</th>
+                                                <th>Exam Month</th>
                                                 <th>Exam Date</th>
                                                 <th>Status</th>
 
@@ -29,6 +30,7 @@
                                                 <th>Center</th>
                                                 <th>Total Marks</th>
                                                 <th>Obtained Marks</th>
+                                                <th>Exam Month</th>
                                                 <th>Exam Date</th>
                                                 <th>Status</th>
                                             </tr>
@@ -43,6 +45,7 @@
                                                 <td><%#Eval("Office_Name") %></td>
                                                 <td><%#Eval("TotalMarks") %></td>
                                                 <td><%#Eval("ObtainedMarks") %></td>
+                                                <td><%#Eval("Exam_Id") %></td>
                                                 <td><%#Eval("Exam_Date") %></td>
                                                 <td><%#Eval("Status") %></td>
                                             </tr>
